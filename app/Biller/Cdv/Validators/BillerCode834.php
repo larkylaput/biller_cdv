@@ -2,7 +2,7 @@
 
 namespace App\Biller\Cdv\Validators;
 
-use App\Modules\Biller\Exceptions\BillerValidatorException;
+use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 
 class BillerCode834 implements BillerCdvInterface

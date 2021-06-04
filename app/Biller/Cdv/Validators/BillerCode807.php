@@ -4,7 +4,7 @@ namespace App\Biller\Cdv\Validators;
 
 use DateTime;
 use Carbon\Carbon;
-use App\Modules\Biller\Exceptions\BillerValidatorException;
+use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 
 class BillerCode807 implements BillerCdvInterface
