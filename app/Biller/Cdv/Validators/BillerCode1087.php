@@ -29,7 +29,7 @@ class BillerCode1087 implements BillerCdvInterface
     private function validateLength($mainField)
     {
         $length = strlen($mainField);
-        if ($length < 1 or $length > 8) {
+        if ($length <> 8) {
             return false;
         }
         return true;
