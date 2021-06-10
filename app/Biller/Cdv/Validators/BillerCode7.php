@@ -72,14 +72,16 @@ class BillerCode7 implements BillerCdvInterface
         }
         $remainder = fmod($sum, 10);
         $computed = 10 - $remainder;
+
+        if ($remainder == 0) {
+            $computed = 0;
+        }
         
         $formula['Check'][] = "Modulo: $sum % 10 = $remainder";
         $formula['Check'][] = "Checker: 10 - $remainder = $computed";
         $formula['Check'][] = $checkDigit==$computed;
 
-        if ($remainder === 10) {
-            $computed = 0;
-        }
+        // dd($formula);
         
         return $checkDigit == $computed;
     }
