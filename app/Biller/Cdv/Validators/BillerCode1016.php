@@ -9,8 +9,6 @@ class BillerCode1016 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        
-        dd($this->validateCharacters($mainField));
         try {
             // PNB Credit Cards
             $mainField = preg_replace('/\D/', '', $mainField);
@@ -74,10 +72,8 @@ class BillerCode1016 implements BillerCdvInterface
                 $ctr = $ctr - 1;
                 $i++;
 
-
                 $stdntNum = $stdntNum % 10;
                 $validated = strval($stdntNum);
-
 
                 if($validated == $lastdgt){
 
@@ -87,7 +83,6 @@ class BillerCode1016 implements BillerCdvInterface
                     return false; // not valid
 
                 }
-
             }
 
         }else{
