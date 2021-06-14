@@ -13,6 +13,7 @@ class BillerCode700 implements BillerCdvInterface
         try {
             // PNB Credit Cards
             // $mainField = preg_replace('/\D/', '', $mainField);
+            
             if (
                 $this->validateLength($mainField) and
                 $this->validateCharacter($mainField)
