@@ -5,7 +5,7 @@ namespace App\Biller\Cdv\Validators;
 use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 
-class BillerCodeTEST implements BillerCdvInterface
+class BillerCode100 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
