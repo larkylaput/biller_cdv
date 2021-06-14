@@ -15,8 +15,8 @@ class BillerCode825 implements BillerCdvInterface
             $mainField = preg_replace('/\D/', '', $mainField);
             if (
                 $this->validateLength($mainField) and 
-                $this->validateFirstFourDigits($mainField) and 
-                $this->validateCheckDigit($mainField)
+                $this->firstFourCharacters($mainField) and 
+                $this->validateStudenNumber($mainField)
             ) {
                 return true;
             }
@@ -29,41 +29,29 @@ class BillerCode825 implements BillerCdvInterface
 
     private function validateLength($mainField)
     {
-        $length = strlen($mainField);
-
-        return $length === 11 ? true : false;
+        return strlen($mainField) == 11;
     }
 
-    private function validateFirstFourDigits($mainField) {
-        $firstFour = substr($mainField, 0, 4);
+    private function firstFourCharacters($mainField)
+    {
+        return substr($mainField,0,4) >= 2002;
+    }
 
-        return $firstFour == 2002 ? true : false;
-    } 
-
-    private function validateCheckDigit($mainField) {
-        $accountNumber = str_split(substr($mainField, 0, 10));
-        $checkDigit = substr($mainField, 10, 1);
+    private function validateStudenNumber($mainField)
+    {
+        $pos = 10;
         $sum = 0;
-        $index = 0;
 
-        $accountNumberRev = array_reverse($accountNumber);
-
-        for($i = 11; $i <= 20; $i++){
-            $sum += (int) $accountNumberRev[$index] * $i;
-
-            $index++;
+        for ($i = 11; $i <= 20; $i++) {
+            $sum += intval(substr($mainField, $pos -1, 1)) * $i;
+            $pos -= 1;
         }
+        $lastDigit = substr($mainField, -1, 1);
 
-        // dd($accountNumber, $accountNumberRev, $checkDigit, $sum);
+        $remainder = $sum % 10;
 
-        if($checkDigit  == ($sum % 10)){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    } 
+        return $remainder == $lastDigit;
+    }
 
     private function validateHypen($digit)
     {
