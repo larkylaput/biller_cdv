@@ -12,11 +12,10 @@ class BillerCode1082 implements BillerCdvInterface
     public function validate($mainField, $amount): bool
     {
         try {
-            // $mainField = preg_replace('/\D/', '', $mainField);
+            $mainField = preg_replace('/\D/', '', $mainField);
             if (
                 $this->validateLength($mainField) and 
-                $this->validateFirstTwoDigits($mainField) and 
-                $this->validateFormat($mainField)
+                $this->validateFirstTwoDigits($mainField)
             ) {
                 return true;
             }
@@ -31,7 +30,7 @@ class BillerCode1082 implements BillerCdvInterface
     {
         $length = strlen($mainField);
         
-        return $length === 10 ? true : false;
+        return $length === 8 ? true : false;
     }
 
     private function validateFirstTwoDigits($mainField) {
@@ -41,29 +40,6 @@ class BillerCode1082 implements BillerCdvInterface
             return true;
         }
         return false;
-    } 
-
-    private function validateFormat($mainField) {
-        $accountNumber = str_split($mainField);
-        
-        foreach ($accountNumber as $index => $value) {
-            if(in_array($index, self::FORMAT)){
-                if(!$this->validateHypen($value)){
-                    return false;
-                }
-            }
-            else{
-                if(!is_numeric($value)){
-                    return false;
-                }
-            }
-        }
-        return true;
-    } 
-
-    private function validateHypen($digit)
-    {
-        return $digit === '-' ? true : false;
     }
 }
 
