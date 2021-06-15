@@ -38,7 +38,7 @@ class BillerCode700 implements BillerCdvInterface
     }
 
     private function validateCharacter($mainField){
-
+        
         $m = 0;
     
         $d='0123456789123406789523401789563401289567401239567859876043216598710432765982104387659321049876543210';
@@ -55,19 +55,24 @@ class BillerCode700 implements BillerCdvInterface
         $c = 0;
         // foreach($split_string as $data){
         while($i < $length_string){
-            $m_substr2 = 0;
-            $m_substr_param1 = (($i%8)*10);
-            // $m_substr2 = substr($reversed_string,$i+1,1);
-            $m_substr2 = substr($reversed_string,$i,1); // i removed +1 because in php first param in substr starts with 0
-            // $m = substr($p,((int)$m_substr_param1+(int)$m_substr2)+1,1);
-            $m = substr($p,((int)$m_substr_param1+(int)$m_substr2),1); // i removed +1 because in php first param in substr starts with 0
+
+            // SET @m = CAST(	substring(@p,((@i%8)*10) + CAST(substring(@n,@i+1,1) as tinyint)	+1,1) as tinyint)
+
+            // SET @c = CAST(substring(@d,(@c*10+@m+1),1) as tinyint)
+
+
+            // SET @i=@i+1
+
+            $m = intval(    substr( $p, (($i%8)*10) + intval(substr($reversed_string,$i,1)) , 1)); // i removed +1 because in php first param in substr starts with 0
             
-            $c_substr_param1 = ($c*10+$m+1);
-            $c = (int)substr($d,$c_substr_param1,1);
+            $c = (int)substr($d,($c*10+$m),1);
 
             $i++;
             
+           
+           
         }
+
         if($c == 0){
             return true;
         }else{
