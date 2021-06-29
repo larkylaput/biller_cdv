@@ -10,21 +10,14 @@ use Throwable;
 class BillerCode661 implements BillerCdvInterface {
     const VALID_LENGTH = [14, 16];
     const SIXTEEN_DIGITS_ALLOWED_INITIAL_DIGITS = [
+        // 542551,
         518217,
         518178,
         515603,
         531210,
         549832,
-        542551,
-        525617,
-        510186
-    ];
-
-    const FOURTEEN_DIGITS_ALLOWED_INITIAL_DIGITS = [
-        '30',
-        '36',
-        '38',
-        '39'
+        510186,
+        525617
     ];
 
     const WEIGHT = 212121212121212;
@@ -43,55 +36,33 @@ class BillerCode661 implements BillerCdvInterface {
         return false;
     }
 
-
-    private function getLength() : bool
-    {
-       return in_array(strlen($this->mainField), self::VALID_LENGTH) ? strlen($this->mainField) : false;
-    }
-
     private function validateField()
     {
         $len = strlen($this->mainField);
         if ($len == 16 and is_numeric($this->mainField)) {
-            return $this->validateSixteenDigits();
-        }
-
-        if ($len == 14) {
-            return $this->validateFourteenDigits();
+            return $this->validateCheckDigit();
         }
 
         return false;
     }
 
-    private function validateSixteenDigits()
+    private function validateCheckDigit()
     {
         if (!in_array(substr($this->mainField, 0, 6), self::SIXTEEN_DIGITS_ALLOWED_INITIAL_DIGITS)) {
             return false;
         }
 
-        $checkDigit = $this->checkDigit(14);
+        $checkDigit = $this->computeCheckDigit();
         $check = substr($this->mainField, -1);
 
         return $checkDigit == $check;
     }
 
-    private function validateFourteenDigits()
-    {
-        if (!in_array(substr($this->mainField, 0, 6), self::FOURTEEN_DIGITS_ALLOWED_INITIAL_DIGITS)) {
-            return false;
-        }
-
-        $checkDigit = $this->checkDigit(13, $checkDigit, $total);
-      
-        return $checkDigit == $chk;
-    }
-
-    private function checkDigit($loopCount)
+    private function computeCheckDigit()
     {
         $count = 0;
         $total = 0;
         
-
         while ($count <= 14) {
             $fieldValue = intval(substr($this->mainField, $count, 1));
             $weightValue = intval(substr(self::WEIGHT, $count, 1));
