@@ -42,46 +42,50 @@ class BillerCode640 implements BillerCdvInterface
     private function validateCharacters($mainField){
 
         $Weights = '987654321';
-        $I = 0;
-        $WP = 0;
-        $WD = 0;
-        $WR = 0;
-        $WSS = 0;
-        $R = 0;
-        $LastDigit = 0;
-        $WA = 0;
+        $Weights_split = str_split($Weights);
+        $mainField_split = str_split(substr($mainField,0,9));
+        $mainField_check_digit = substr($mainField,9,1);
+        $result = [];
+        foreach($mainField_split as $key => $data){
 
-        $X = $mainField;
-        $I = intval(0); // first digit of mainfield
-        $P = intval(9); // last digit of mainfield
+            $t = 0;
+            $a_val = [];
+    
+            // multiply the digit based on corresponding index.
+            $t = intval($data) * intval($Weights_split[$key]);
+            
+            if(strlen($t) > 1){ 
+                // if the digit in index is greater than 1, split the digits and get the sum.
+                $a_val = str_split($t);
+                array_push($result,intval(array_sum($a_val)));
+            }else{
+                array_push($result,intval($t));
+            }
+          
+        }
 
-        while($I < $P){
-            $WP = intval(substr($Weights,$I,1)) * intval(substr($X,$I,1));
-            $WD = $WP / 10;
-            $WR = fmod($WP,10);
-            $WSS = $WD + $WR;
+        $final_result = [];
+        foreach($result as $key => $data){
 
-            if($WSS / 10 <> 0){
-                $WD = $WSS / 10;
-                $WR = fmod($WSS,10);
-                $WSS = $WD + $WR;
+            $value = [];
+
+            if(strlen($data) > 1){ 
+                $value = str_split($data);
+                array_push($final_result,intval(array_sum($value)));
+            }else{
+                array_push($final_result,intval($data));
             }
 
-            $WA = $WA + $WSS;
-            $I = $I + 1;
         }
 
-        $R = fmod($WA,10);
-        if($R > 0){
-            $LastDigit = 10 - $R;
-        }else{
-            $LastDigit = 0;
-        }
+        $higher_number = array_sum($final_result);
+        $remainder = fmod($higher_number,10);
+        $check_digit = 10 - $remainder;
 
-        if(intval(substr($X,9,1)) == $LastDigit){
+        if($check_digit == $mainField_check_digit){
             return true;
-        }else{
-            return false;
         }
+        return false;
+
     }
 }
