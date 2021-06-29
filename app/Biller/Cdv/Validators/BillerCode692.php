@@ -72,7 +72,7 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //1
-        $SubGetDigit2 = fmod(intval(substr($mainField,0,1) + $TalGetDigit1),10);
+        $SubGetDigit2 = fmod(intval(substr($mainField,1,1) + $TalGetDigit1),10);
         if(intval($SubGetDigit2) == 0){
             $TalGetDigit2 = fmod((int)10 * (int)3,11);
         }else{
@@ -80,7 +80,7 @@ class BillerCode692 implements BillerCdvInterface
         }
         
         //3
-        $SubGetDigit3 = fmod(intval(substr($mainField,0,1) + $TalGetDigit2),10);
+        $SubGetDigit3 = fmod(intval(substr($mainField,2,1) + $TalGetDigit2),10);
         if(intval($SubGetDigit3) == 0){
             $TalGetDigit3 = fmod((int)10 * (int)3,11);
         }else{
@@ -88,7 +88,7 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //4
-        $SubGetDigit4 = fmod(intval(substr($mainField,0,1) + $TalGetDigit3),10);
+        $SubGetDigit4 = fmod(intval(substr($mainField,3,1) + $TalGetDigit3),10);
         if(intval($SubGetDigit4) == 0){
             $TalGetDigit4 = fmod((int)10 * (int)3,11);
         }else{
@@ -96,7 +96,7 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //5
-        $SubGetDigit5 = fmod(intval(substr($mainField,0,1) + $TalGetDigit4),10);
+        $SubGetDigit5 = fmod(intval(substr($mainField,4,1) + $TalGetDigit4),10);
         if(intval($SubGetDigit5) == 0){
             $TalGetDigit5 = fmod((int)10 * (int)3,11);
         }else{
@@ -104,7 +104,7 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //6
-        $SubGetDigit6 = fmod(intval(substr($mainField,0,1) + $TalGetDigit5),10);
+        $SubGetDigit6 = fmod(intval(substr($mainField,5,1) + $TalGetDigit5),10);
         if(intval($SubGetDigit6) == 0){
             $TalGetDigit6 = fmod((int)10 * (int)3,11);
         }else{
@@ -112,7 +112,7 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //7
-        $SubGetDigit7 = fmod(intval(substr($mainField,0,1) + $TalGetDigit6),10);
+        $SubGetDigit7 = fmod(intval(substr($mainField,6,1) + $TalGetDigit6),10);
         if(intval($SubGetDigit7) == 0){
             $TalGetDigit7 = fmod((int)10 * (int)3,11);
         }else{
@@ -120,7 +120,7 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //8
-        $SubGetDigit8 = fmod(intval(substr($mainField,0,1) + $TalGetDigit7),10);
+        $SubGetDigit8 = fmod(intval(substr($mainField,7,1) + $TalGetDigit7),10);
         if(intval($SubGetDigit8) == 0){
             $TalGetDigit8 = fmod((int)10 * (int)3,11);
         }else{
@@ -128,14 +128,14 @@ class BillerCode692 implements BillerCdvInterface
         }
 
         //9
-        $SubGetDigit9 = fmod(intval(substr($mainField,0,1) + $TalGetDigit8),10);
+        $SubGetDigit9 = fmod(intval(substr($mainField,8,1) + $TalGetDigit8),10);
         if(intval($SubGetDigit9) == 0){
             $TalGetDigit9 = fmod((int)10 * (int)3,11);
         }else{
             $TalGetDigit9 = fmod(((int)$SubGetDigit9 * 3),11);
         }
 
-        $SubGetDigit = fmod(intval(substr($mainField,0,1) + $TalGetDigit9),10);
+        $SubGetDigit = fmod(intval(substr($mainField,9,1) + $TalGetDigit9),10);
         if(intval($SubGetDigit) == 0){
             $TalGetDigit = fmod((int)10 * (int)3,11);
         }else{
@@ -144,7 +144,7 @@ class BillerCode692 implements BillerCdvInterface
 
 
         $TotalDigit = fmod(11 - intval($TalGetDigit),10);
-        if($TotalDigit = intval(substr($mainField,11,1))){
+        if($TotalDigit = intval(substr($mainField,10,1))){
             return true;
         }else{
             return false;
