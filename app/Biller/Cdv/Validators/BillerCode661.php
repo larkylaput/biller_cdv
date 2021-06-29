@@ -6,7 +6,7 @@ use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 use Throwable;
 
-
+// Security Bank Mastercard
 class BillerCode661 implements BillerCdvInterface {
     const VALID_LENGTH = [14, 16];
     const SIXTEEN_DIGITS_ALLOWED_INITIAL_DIGITS = [
@@ -26,16 +26,15 @@ class BillerCode661 implements BillerCdvInterface {
         '38',
         '39'
     ];
+
     const WEIGHT = 212121212121212;
     private $mainField;
-    // Security Bank Mastercard
-    public function validate($mainField, $amount): bool{
+    
+    public function validate($mainField, $amount): bool
+    {
         $this->mainField = $mainField;
         try {
-            // dd(
-            //     (bool) $len = $this->getLength(), $this->validateField($len)
-            // );
-            return (bool) $len = $this->getLength($mainField) and $this->validateField($len);
+            return $this->validateField();
 
         } catch (Throwable $th) {
             throw $th;
@@ -45,12 +44,14 @@ class BillerCode661 implements BillerCdvInterface {
     }
 
 
-    private function getLength(){
+    private function getLength() : bool
+    {
        return in_array(strlen($this->mainField), self::VALID_LENGTH) ? strlen($this->mainField) : false;
     }
 
-    private function validateField($len)
+    private function validateField()
     {
+        $len = strlen($this->mainField);
         if ($len == 16 and is_numeric($this->mainField)) {
             return $this->validateSixteenDigits();
         }
@@ -68,30 +69,10 @@ class BillerCode661 implements BillerCdvInterface {
             return false;
         }
 
-        $count = 0;
-        $test = [];
-        $total = 0;
-        $checkDigit = 0;
-        $chk = substr($this->mainField, -1, 1);
+        $checkDigit = $this->checkDigit(14);
+        $check = substr($this->mainField, -1);
 
-        while ($count <= 15) {
-            $fieldValue = intval(substr($this->mainField, $count, 1));
-            $weightValue = intval(substr(self::WEIGHT, $count, 1));
-            $product = $fieldValue * $weightValue;
-            if ($product > 9) {
-                $num1 = substr($product, 0, 1);
-                $num2 = substr($product, 1, 1);
-                $sum = intval($num1) + intval($num1);
-                $total += $sum;
-            } else {
-                $total += $product;
-            }
-            $count += 1;
-        } 
-        
-        $checkDigit = $this->checkDigit(15, $checkDigit, $total);
-      
-        return $checkDigit == $chk;
+        return $checkDigit == $check;
     }
 
     private function validateFourteenDigits()
@@ -105,23 +86,20 @@ class BillerCode661 implements BillerCdvInterface {
         return $checkDigit == $chk;
     }
 
-    private function checkDigit($loopCount, $checkDigit, $total)
+    private function checkDigit($loopCount)
     {
         $count = 0;
-        $test = [];
         $total = 0;
-        $checkDigit = 0;
-        $chk = substr($this->mainField, -1, 1);
+        
 
-        while ($count <= $loopCount) {
+        while ($count <= 14) {
             $fieldValue = intval(substr($this->mainField, $count, 1));
             $weightValue = intval(substr(self::WEIGHT, $count, 1));
             $product = $fieldValue * $weightValue;
-            $test[$count] = "$fieldValue * $weightValue = $product";
             if ($product > 9) {
                 $num1 = substr($product, 0, 1);
                 $num2 = substr($product, 1, 1);
-                $sum = intval($num1) + intval($num1);
+                $sum = intval($num1) + intval($num2);
                 $total += $sum;
             } else {
                 $total += $product;
