@@ -8,19 +8,13 @@ use App\Biller\Cdv\Factory\BillerCdvInterface;
 class BillerCode1014 implements BillerCdvInterface
 {
     CONST WEIGHT = [64, 32, 16, 8, 4, 2, 1];
-// Prulife UK
+    CONST FIRST_DIGIT = [1, 6, 8, 9];
+    // Prulife UK
     public function validate($mainField, $amount): bool
     {
         try {
-            // $mainField = preg_replace('/\D/', '', $mainField);
-            if (
-                $this->validateLength($mainField) AND 
-                $this->validateCharacters($mainField) AND 
-                $this->validateFormat($mainField) 
-            ) {
-                if($this->validateCheckDigit($mainField)){
-                    return true;
-                }
+            if($this->validateField($mainField)){
+                return true;
             }
         } catch (\Throwable $e) {
             throw new BillerValidatorException();
@@ -29,12 +23,26 @@ class BillerCode1014 implements BillerCdvInterface
         return false;
     }
 
-    private function validateLength($mainField)
+    private function validateField($mainField)
     {
-        $mainField = preg_replace('/\D/', '', $mainField);
-        $length = strlen($mainField);
-        
-        return $length === 8 ? true : false;
+        $length = strlen(preg_replace('/\D/', '', $mainField));
+        if($length == 8){
+            if($this->validateCharacters($mainField)){
+                if($this->validateRange($mainField)){
+                    return true;
+                }
+                else{
+                    return $this->validateCheckDigit($mainField);
+                }
+            }
+        }
+        if($length == 13){
+            if($this->validateFormat($mainField)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function validateCharacters($mainField)
@@ -45,24 +53,38 @@ class BillerCode1014 implements BillerCdvInterface
 
     private function validateFormat($mainField)
     {
-        $first7 = substr($mainField, 0, 7);
-        $hypen = substr($mainField, 7, 1);
-        $lastDigit = substr($mainField, 8, 1);
+        $firstChar = substr($mainField, 0, 1);
+        $remainingChar = substr($mainField, 1, 13);
 
-        if(is_numeric($first7)){
-            if($hypen == "-"){
-                if(is_numeric($lastDigit)){
-                    return true;
-                }
-            }
+        if(is_numeric($firstChar)){
+            return true;
         }
+
+        if(!preg_match("/^[aA-zZ0-9]+$/", $remainingChar)){
+            return true;
+        };
+
+        return false;
+    }
+
+    private function validateRange($mainField)
+    {
+        $firstDigit = substr($mainField, 0, 1);
+        if(in_array($firstDigit, SELF::FIRST_DIGIT)){
+            return true;
+        }
+
+        if($mainField >= 1 AND $mainField <= 71000){
+            return true;
+        }
+
         return false;
     }
 
     private function validateCheckDigit($mainField)
     {
         $accountNumber = str_split(substr($mainField, 0, 7));
-        $checkDigit = substr($mainField, 8, 1);
+        $checkDigit = substr($mainField, 7, 1);
 
         $formula['Account Number'] = $mainField;
         $formula['Check Digit'] = $checkDigit;
@@ -74,26 +96,18 @@ class BillerCode1014 implements BillerCdvInterface
             $product = $value * Self::WEIGHT[$key];
 
             $formula['Product'][] = "$value X ".Self::WEIGHT[$key]. " = $product";
+            $formula['Summation'][] = "($product) $sum + $product = " . ($sum + $product);
 
-            if($product > 8){
-                $result = str_split($product);
-                foreach ($result AS $i => $val) {
-                    $formula['Summation'][] = "($product) $sum + $val = " . ($sum + $val);
-
-                    $sum += $val;
-                }
-            }
-            else{
-                $formula['Summation'][] = "($product) $sum + $product = " . ($sum + $product);
-
-                $sum += $product;
-            }
+            $sum += $product;
         }
         $remainder = fmod($sum, 11);
         $computed = 11 - $remainder;
 
-        if ($remainder == 0) {
-            $computed = 0;
+        if($computed == 10){
+            $computed = 9;
+        }
+        if($computed == 11){
+            $computed = 1;
         }
         
         $formula['Check'][] = "Modulo: $sum % 11 = $remainder";
