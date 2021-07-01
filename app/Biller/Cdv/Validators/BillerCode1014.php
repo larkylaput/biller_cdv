@@ -36,11 +36,11 @@ class BillerCode1014 implements BillerCdvInterface
                 }
             }
         }
-        if($length == 13){
-            if($this->validateFormat($mainField)){
-                return true;
-            }
-        }
+        // if($length == 13){
+        //     if($this->validateFormat($mainField)){
+        //         return true;
+        //     }
+        // }
 
         return false;
     }
