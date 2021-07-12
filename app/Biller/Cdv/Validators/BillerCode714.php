@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Biller\Cdv\Validators;
+
+use App\Exceptions\BillerValidatorException;
+use App\Biller\Cdv\Factory\BillerCdvInterface;
+
+class BillerCode714 implements BillerCdvInterface
+{
+    public function validate($mainField, $amount): bool
+    {   
+        dd($this->checkChracters($mainField));
+        try {
+            $mainField = preg_replace('/\D/', '', $mainField);
+            if (
+                $this->validateLength($mainField) and 
+                $this->validateCharacters($mainField)
+            ) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            throw new BillerValidatorException();
+        }
+        return false;
+    }
+
+    private function validateLength($mainField)
+    {
+        $length = strlen($mainField);
+        if ($length < 2 or $length > 16 or empty($mainField) ) {
+            return false;
+        }
+        return true;
+    }
+
+    private function validateCharacters($mainField) {
+        return is_numeric($mainField);
+    } 
+
+    private function checkChracters($mainField){
+
+        $validChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $result = true;
+        if(substr($mainField,0,3) == 'RVB' OR substr($mainField,0,3) == 'SLV'){
+            $ctr = 3;
+            while($ctr < strlen($mainField)){
+                if(strpos($validChars,substr($mainField,$ctr,1)) === false){
+                    return false;
+                }
+                $ctr++;
+            }
+            return true;
+        }else if(substr($mainField,0,2) == 'VW' OR substr($mainField,0,2) == 'TB'){
+            $ctr = 2;
+            while($ctr < strlen($mainField)){
+                if(strpos($validChars,substr($mainField,$ctr,1)) === false){
+                    return false;
+                }
+                $ctr++;
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
