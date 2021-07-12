@@ -52,32 +52,33 @@ class BillerCode1 implements BillerCdvInterface
         $sum = 0;
         $comp = 0;
         $product = 0;
-        while($i <= strlen($new_mainField)){
-            $product = intval(substr($mainField,$i,1)) * (11 - $i);
+        $split_mainField = str_split(substr($mainField,2,7));
+        
+        $split_weight = str_split('8765432');
+        
+        foreach($split_weight as $key => $data){
+            $product = $split_mainField[$key] * $data;
             $sum = $sum + $product;
-            $i++;
         }
-
+        
         $rem = fmod($sum,11);
-        if($rem){
-            return false;
+
+ 
+        if($rem == 0){
+            $comp = 0;
+        }else if($rem == 10){
+            $comp = 1;
         }else{
-            if($rem == 0){
-                $comp = 0;
-            }else if($rem == 10){
-                $comp = 1;
-            }else{
-                $comp = 11 - $rem;
-            }
-
-            if($comp == $checkdigit){
-                return true;
-            }else{
-                return false;
-            }
-
+            $comp = 11 - $rem;
         }
-
+        
+        if($comp == $checkdigit){
+         
+            return true;
+        }else{
+         
+            return false;
+        }
 
     }
 
