@@ -9,18 +9,18 @@ class BillerCode714 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {   
-        dd($this->checkChracters($mainField));
         try {
-            $mainField = preg_replace('/\D/', '', $mainField);
+            // $mainField = preg_replace('/\D/', '', $mainField);
             if (
-                $this->validateLength($mainField) and 
-                $this->validateCharacters($mainField)
+                $this->validateLength($mainField) AND 
+                $this->checkChracters($mainField)
             ) {
                 return true;
             }
         } catch (\Throwable $e) {
             throw new BillerValidatorException();
         }
+        
         return false;
     }
 
@@ -32,10 +32,6 @@ class BillerCode714 implements BillerCdvInterface
         }
         return true;
     }
-
-    private function validateCharacters($mainField) {
-        return is_numeric($mainField);
-    } 
 
     private function checkChracters($mainField){
 
