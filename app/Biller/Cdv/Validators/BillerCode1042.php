@@ -32,6 +32,6 @@ class BillerCode1042 implements BillerCdvInterface
 
     private function validateCharacters($mainField)
     {
-        return (bool) preg_match('/^[aA-zZ0-9]+$/', $mainField);
+        return (bool) preg_match('/^[aA-zZ0-9 ]+$/', $mainField);
     }
 }
