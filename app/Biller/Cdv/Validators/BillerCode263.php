@@ -21,10 +21,10 @@ class BillerCode263 implements BillerCdvInterface
         // dd($this->validateFormat($mainField));
         try {
             if(
-                // $this->validateCode($mainField) AND
+                $this->validateCode($mainField) AND
                 $this->validateLength($mainField) AND
                 $this->validateCharacters($mainField) AND
-                // $this->validateFirst3Digits($mainField) AND
+                $this->validateFirst3Digits($mainField) AND
                 $this->validateFormat($mainField)
             ) {
                 return true;
