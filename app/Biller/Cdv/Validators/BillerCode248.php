@@ -54,7 +54,7 @@ class BillerCode248 implements BillerCdvInterface
 
     private function validateCheckDigit($mainField)
     {
-        $accountNumber = str_split(substr($mainField, 0, 6));
+        $accountNumber = str_split(substr($mainField, 0, 10));
         $checkDigit = substr($mainField, -2);
 
         $formula['Account Number'] = $mainField;
@@ -64,7 +64,8 @@ class BillerCode248 implements BillerCdvInterface
         $sum = 0;
 
         foreach ($accountNumber AS $key => $value) {
-            $multi = 2 - fmod($key, 2);
+            $index = $key + 1;
+            $multi = 2 - fmod($index, 2);
             $product = $value * $multi;
 
             $formula['Product'][] = "$value X ".$multi. " = $product";
