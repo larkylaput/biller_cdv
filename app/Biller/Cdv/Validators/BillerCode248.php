@@ -20,12 +20,10 @@ class BillerCode248 implements BillerCdvInterface
 
         // dd($this->validateFormat($mainField));
         try {
-            if(
-                $this->validateCode($mainField) AND
-                $this->validateLength($mainField) AND
+            if($this->validateLength($mainField) AND
                 $this->validateCharacters($mainField) AND
                 $this->validateFirst3Digits($mainField) AND
-                $this->validateFormat($mainField)
+                $this->validateCheckDigit($mainField)
             ) {
                 return true;
             }
@@ -33,11 +31,6 @@ class BillerCode248 implements BillerCdvInterface
             throw new BillerValidatorException();
         }
         return false;
-    }
-
-    public function validateCode($mainField) {
-        $first3digit = substr($mainField, 0, 3);
-        return array_search($first3digit, Self::CODE);
     }
 
     public function validateLength($mainField) {
@@ -51,42 +44,58 @@ class BillerCode248 implements BillerCdvInterface
     public function validateFirst3Digits($mainField) {
         $first3digit = substr($mainField, 0, 3);
         $result = false;
-        foreach (Self::CODE as $code) {
-            if ($first3digit === $code)
-                $result = true;
+        
+        if (in_array($first3digit, self::CODE)){
+            return true;
         }
 
         return $result;
     }
 
-    public function validateFormat($mainField) {
-        $count = 1;
-        $sum = 0;
+    private function validateCheckDigit($mainField)
+    {
+        $accountNumber = str_split(substr($mainField, 0, 6));
+        $checkDigit = substr($mainField, -2);
+
+        $formula['Account Number'] = $mainField;
+        $formula['Check Digit'] = $checkDigit;
         
-        for ($i=$count; $i <= 10; $i++) { 
-            $product = 0;
-            $multi = 2 - fmod($count, 2);
-            $multi = (int)$multi;
+        $product = 0;
+        $sum = 0;
 
-            $product = (int)substr($mainField, $count, 1) * $multi;
-            $product = (int)$product;
+        foreach ($accountNumber AS $key => $value) {
+            $multi = 2 - fmod($key, 2);
+            $product = $value * $multi;
 
-            if (strlen($product) === 2)
-                $product = (int)substr($product, 1, 1) + (int)substr($product, 2, 1);
+            $formula['Product'][] = "$value X ".$multi. " = $product";
 
-            $sum = $sum + $product;
-            $count = $count + 1;
+            if($product > 9){
+                $result = str_split($product);
+                foreach ($result AS $i => $val) {
+                    $formula['Summation'][] = "($product) $sum + $val = " . ($sum + $val);
+
+                    $sum += $val;
+                }
+            }
+            else{
+                $formula['Summation'][] = "($product) $sum + $product = " . ($sum + $product);
+
+                $sum += $product;
+            }
         }
+        $remainder = fmod($sum, 10);
+        $computed = 10 - $remainder;
 
-        $cdv = 10 - fmod($sum, 10);
-        $cdv = (int)$cdv;
+        if ($remainder == 0) {
+            $computed = 0;
+        }
+        
+        $formula['Check'][] = "Modulo: $sum % 10 = $remainder";
+        $formula['Check'][] = "Checker: 10 - $remainder = $computed";
+        $formula['Check'][] = $checkDigit==$computed;
 
-        if ($cdv === 10)
-            $cdv = 0;
-
-        if ((int)substr($mainField, -2) <> $cdv)
-            return false;
-
-        return true;
+        // dd($formula);
+        
+        return $checkDigit == $computed;
     }
 }
