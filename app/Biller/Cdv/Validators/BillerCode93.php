@@ -33,7 +33,7 @@ class BillerCode93 implements BillerCdvInterface
     }
 
     public function validateCharacters($mainField) {
-        return (preg_match('/^\d{9}-\d{1}$/', $mainField)) ? true : false;
+        return (preg_match('/^\d{9}-\d{1}$/', $mainField) OR is_numeric($mainField)) ? true : false;
     }
 
     public function validateFormat($mainField) {
