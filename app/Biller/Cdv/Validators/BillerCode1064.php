@@ -7,8 +7,6 @@ use App\Biller\Cdv\Factory\BillerCdvInterface;
 
 class BillerCode1064 implements BillerCdvInterface
 {
-    const WGHT1 = '1212121212';
-
     // 266120055009  
     // 266120069405 
     // 266120034103 
@@ -17,7 +15,7 @@ class BillerCode1064 implements BillerCdvInterface
 
     public function validate($mainField, $amount): bool
     {
-        // dd($this->validateFormat($mainField));
+        dd($this->validateFormat($mainField));
         try {
             if (
                 $this->validateLength($mainField) AND
@@ -47,30 +45,50 @@ class BillerCode1064 implements BillerCdvInterface
     }
 
     public function validateFormat($mainField) {
-        $Sum1 = 0;
 
-        for ($IndCnt=1; $IndCnt < 10; $IndCnt++) { 
-            $Prdt1 = (int)substr(Self::WGHT1, $IndCnt , 1) * (int)substr($mainField, $IndCnt , 1);
+        $accountNumber = str_split(substr($mainField, 0, 10));
+        $checkDigit = substr($mainField, -2);
 
-            if (strlen($Prdt1) === 2) {
-                $Pos1 = (int)substr($Prdt1, 1 , 1) + (int)substr($Prdt1, 2 , 1);
-            } else if (strlen($Prdt1) === 1) {
-                $Pos1 = (int)$Prdt1;
+        $formula['Account Number'] = $mainField;
+        $formula['Check Digit'] = $checkDigit;
+        
+        $product = 0;
+        $sum = 0;
+
+        foreach ($accountNumber AS $key => $value) {
+            $index = $key + 1;
+            $multi = 2 - fmod($index, 2);
+            $product = $value * $multi;
+
+            $formula['Product'][] = "$value X ".$multi. " = $product";
+
+            if($product > 9){
+                $result = str_split($product);
+                foreach ($result AS $i => $val) {
+                    $formula['Summation'][] = "($product) $sum + $val = " . ($sum + $val);
+
+                    $sum += $val;
+                }
             }
+            else{
+                $formula['Summation'][] = "($product) $sum + $product = " . ($sum + $product);
 
-            $Sum1 = $Sum1 + $Pos1;
+                $sum += $product;
+            }
         }
+        $remainder = fmod($sum, 10);
+        $computed = 10 - $remainder;
 
-        $Mod1 = fmod($Sum1, 10);
-        $Chk = 10 - $Mod1;
-
-        $Chk = (strlen($Chk) === 2) ? substr(substr($Chk, 0, 3) , 2, 1) : $Chk;
-        $Chk = (int)$Chk;
-
-        if ($Chk === (int)substr($mainField , 11)) {
-            return true;
+        if ($remainder == 0) {
+            $computed = 0;
         }
+        
+        $formula['Check'][] = "Modulo: $sum % 10 = $remainder";
+        $formula['Check'][] = "Checker: 10 - $remainder = $computed";
+        $formula['Check'][] = $checkDigit==$computed;
 
-        return false;
+        // dd($formula);
+        
+        return $checkDigit == $computed;
     }
 }
