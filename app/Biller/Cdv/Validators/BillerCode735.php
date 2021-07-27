@@ -66,7 +66,7 @@ class BillerCode735 implements BillerCdvInterface
 
     private function validateField($mainField, $amount)
     {
-        $amount = number_format((float) $amount, 2, '.', '');
+        $amount = number_format((float) $amount, 3, '.', '');
         $date = str_split(substr($mainField, 0, 6), 2);
         $date = implode('/', $date);
 
@@ -78,21 +78,19 @@ class BillerCode735 implements BillerCdvInterface
                 $wholeNum = (int) $amount;
                 $CheckWhole = $this->getCheck($wholeNum);
 
-                $dec = substr($amount, -2);
+                $dec = substr($amount, -3);
                 $CheckDecimal = $this->getCheck($dec);
 
-                $WholeNumber = $amount * 1;
+                $WholeNumber = $amount * 1000;
                 $WNMod = $WholeNumber % 7;
                 $BindWDNum = $CheckWhole . $CheckDecimal . $WNMod;
-                $Final = $this->getCheck($BindWDNum);
+                $FinalCheckamt = $this->getCheck($BindWDNum);
 
-                $FinalCheckamt = substr($mainField, 11, 2);
-                
+                $Final = substr($mainField, 11, 2);
                 if($Final == $FinalCheckamt){
                     $GetRefNum = substr($mainField, 0, 13);
 
                     $RNDS = $this->validateRefNo($GetRefNum);
-
                     if($RNDS == substr($mainField, 13, 1)){
                         if(substr($mainField, 14, 2) == '01'){
                             return true;
