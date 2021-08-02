@@ -4,14 +4,13 @@ namespace App\Biller\Cdv\Validators;
 
 use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
-use Hamcrest\Type\IsNumeric;
 use Throwable;
 
 class BillerCode91 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateFormat($mainField));
+        // dd($this->validateFormat($mainField));
         try {
             if($this->validateLength($mainField) AND
                 $this->validateCharacter($mainField) AND
@@ -35,7 +34,7 @@ class BillerCode91 implements BillerCdvInterface
 
     public function validateFormat($mainField) {
         $check_digit = (int)substr($mainField, 6, 1);
-        $first_count = 1;
+        $first_count = 0;
         $second_count = 7;
         $first_sum = 0;
         $second_sum = 0;
@@ -43,7 +42,7 @@ class BillerCode91 implements BillerCdvInterface
         $formula['Account Number'] = $mainField;
         $formula['Check Digit'] = $check_digit;
 
-        while ($first_count <= strlen($mainField) - 1) {
+        while ($first_count <= 5) {
             $first_sum = (int)substr($mainField, $first_count, 1);
             $product = $first_sum * $second_count;
 
@@ -63,7 +62,7 @@ class BillerCode91 implements BillerCdvInterface
         $formula['Check'][] = "Checker: 11 - $mod = $computed";
         $formula['Check'][] = $check_digit===$computed;
 
-        return $formula;
+        // return $formula;
 
         return $check_digit === $computed;
     }
