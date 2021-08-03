@@ -38,7 +38,7 @@ class BillerCode1065 implements BillerCdvInterface
 
     private function validateCharacters($mainField) {
  
-        return (substr($mainField,0,3) == '268'? false : true);
+        return (substr($mainField,0,3) == '268'? true : false);
     }
 
     private function validateChars($mainField){
