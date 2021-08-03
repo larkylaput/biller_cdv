@@ -10,13 +10,14 @@ class BillerCode1065 implements BillerCdvInterface
     const weight = '1212121212';
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateChars($mainField));
+        
         try {
             // PNB Credit Cards
             $mainField = preg_replace('/\D/', '', $mainField); // remove all the non numberic characters
             if(
                 $this->validateLength($mainField)  and 
-                $this->validateCharacters($mainField) 
+                $this->validateCharacters($mainField) and
+                $this->validateChars($mainField)
             ) {
                 return true;
             }
