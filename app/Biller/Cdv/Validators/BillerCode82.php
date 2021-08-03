@@ -11,7 +11,7 @@ class BillerCode82 implements BillerCdvInterface
     const Divisor = 10;
     public function validate($mainField, $amount): bool
     {
-        
+        dd($this->validateChars($mainField));
         try {
             // $mainField = preg_replace('/\D/', '', $mainField);
             if (
@@ -48,16 +48,19 @@ class BillerCode82 implements BillerCdvInterface
         $product = 0;
         $total = 0;
         $reimainder = 0;
+        $a = [];
         foreach($split_mainField as $key => $data){
 
-            $product = $split_mainField[$key] * $data;
-
+            $product = $split_weight[$key] * $data;
+           
+            array_push($a,$product);
             $total = $total + $product;
 
         }
         
+
         $reimainder = fmod($total,self::Divisor);
-        
+ 
         if($reimainder <> 0){
             $total = self::Divisor - $reimainder;
         }else{
