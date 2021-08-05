@@ -9,11 +9,11 @@ class BillerCode713 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {   
-        dd($this->validateCharacter($mainField));
+        // dd($this->validateCharacter($mainField));
         try {
             if (
-                $this->validateLength($mainField)
-                // $this->validateCharacter($mainField)
+                $this->validateLength($mainField) &&
+                $this->validateCharacter($mainField)
             ) {
                 return true;
             }
