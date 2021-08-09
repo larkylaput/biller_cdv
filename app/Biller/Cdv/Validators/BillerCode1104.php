@@ -10,7 +10,7 @@ class BillerCode1104 implements BillerCdvInterface
     public function validate($mainField, $amount): bool
     {
         try {
-            $mainField = preg_replace('/\D/', '', $mainField);
+            // $mainField = preg_replace('/\D/', '', $mainField);
             if (
                 $this->validateLength($mainField) AND 
                 $this->validatechars($mainField)
