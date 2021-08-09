@@ -9,7 +9,7 @@ class BillerCode1126 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateFormat($mainField, $amount));
+        // dd($this->validateFormat($mainField, $amount));
         try {
             if(
                 $this->validateLength($mainField) &&
@@ -173,7 +173,7 @@ class BillerCode1126 implements BillerCdvInterface
             $formula['Last Data'][] = "$pay_date_time <= $due_date_time";
             $formula['Last Data'][] = $pay_date_time <= $due_date_time;
 
-            return $formula;
+            // return $formula;
 
             if ($date_amount_remainder1 === 0 && $date_amount_remainder2 === 0) {
                 if ($pay_date_time <= $due_date_time)
