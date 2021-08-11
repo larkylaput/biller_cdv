@@ -9,7 +9,7 @@ class BillerCode693 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateFormat($mainField));
+        // dd($this->validateFormat($mainField));
         try {
             if(
                 $this->validateLength($mainField) &&
@@ -76,7 +76,7 @@ class BillerCode693 implements BillerCdvInterface
         $formula['Check'][] = "Checker: 11 - $remainder = $computed";
         $formula['Check'][] = $computed === $check_digit;
 
-        return $formula;
+        // return $formula;
 
         return $computed === $check_digit;
     }
