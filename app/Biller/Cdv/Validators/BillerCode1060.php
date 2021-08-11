@@ -5,20 +5,22 @@ namespace App\Biller\Cdv\Validators;
 use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 
-class BillerCode913 implements BillerCdvInterface
+class BillerCode1060 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
+
         try {
-            // $mainField = preg_replace('/\D/', '', $mainField);
-			// ABSCBN
-            if (
-                $this->validateLength($mainField) and 
-                $this->validateCharacters($mainField)
+            // PNB Credit Cards
+            $mainField = preg_replace('/\D/', '', $mainField); // remove all the non numberic characters
+            if(
+                $this->validateLength($mainField)  and 
+                $this->validateCharacters($mainField) 
             ) {
                 return true;
             }
-        } catch (\Throwable $e) {
+
+        } catch (\Throwable $th) {
             throw new BillerValidatorException();
         }
         return false;
@@ -27,14 +29,18 @@ class BillerCode913 implements BillerCdvInterface
     private function validateLength($mainField)
     {
         $length = strlen($mainField);
-        if ($length === 50) {
+        if ($length <> 12) {
             return false;
         }
         return true;
     }
 
     private function validateCharacters($mainField) {
-        return($mainField);
-    } 
+        
+        if(substr($mainField,0,1) == 9 AND is_numeric($mainField)){
+            return true;
+        }
 
+        return false;
+    }
 }

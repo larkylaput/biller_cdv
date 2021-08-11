@@ -15,7 +15,7 @@ class BillerCode1064 implements BillerCdvInterface
 
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateFormat($mainField));
+        
         try {
             if (
                 $this->validateLength($mainField) AND
