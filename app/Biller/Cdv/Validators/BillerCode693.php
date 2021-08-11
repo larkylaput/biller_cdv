@@ -28,7 +28,7 @@ class BillerCode693 implements BillerCdvInterface
 
     private function validateLength($mainField)
     {
-        return (strlen($mainField === 9)) ? true : false;
+        return (strlen($mainField) === 9) ? true : false;
     }
 
     private function validateCharacters($mainField) {
@@ -36,7 +36,7 @@ class BillerCode693 implements BillerCdvInterface
     }
 
     private function validateFirstAndSecondDigit($mainField) {
-        return (substr($mainField, 0, 1) !== '0' && substr($mainField, 0, 1) !== '1') ? true : false;
+        return (substr($mainField, 0, 1) !== '0' && substr($mainField, 0, 1) !== '1') ? false : true;
     }
 
     private function validateFormat($mainField) {
