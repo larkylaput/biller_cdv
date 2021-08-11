@@ -27,14 +27,14 @@ class BillerCode913 implements BillerCdvInterface
     private function validateLength($mainField)
     {
         $length = strlen($mainField);
-        if ($length <> 50) {
-            return true;
+        if ($length === 50) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     private function validateCharacters($mainField) {
-       return ($mainField);
-	   
+        return($mainField);
     } 
+
 }

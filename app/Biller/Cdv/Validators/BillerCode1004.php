@@ -34,7 +34,6 @@ class BillerCode1004 implements BillerCdvInterface
     }
 
     private function validateCharacters($mainField) {
-       return ($mainField);
-	   
-    } 
+        return($mainField);
+    }  
 }
