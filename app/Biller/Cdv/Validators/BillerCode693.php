@@ -43,7 +43,7 @@ class BillerCode693 implements BillerCdvInterface
         $weight = '86423597';
         $string_head = substr($mainField, 0, 8);
         $total = 0;
-        $index = 1;
+        $index = 0;
         $amount = 0;
         $check_digit = (int)substr($mainField, 8, 1);
 
