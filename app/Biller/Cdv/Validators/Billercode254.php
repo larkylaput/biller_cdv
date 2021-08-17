@@ -9,12 +9,12 @@ class BillerCode254 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        dd(123);
+        
         try {
             // $mainField = preg_replace('/\D/', '', $mainField);
             if (
                 $this->validateLength($mainField) AND 
-                $this->validateCharacters($mainField)
+                $this->validateChars($mainField)
             ) {
                 return true;
             }
@@ -45,27 +45,25 @@ class BillerCode254 implements BillerCdvInterface
         $temp4 = substr($mainField ,12,2);
         $temp5 = substr($mainField ,14,1);
 
-        if(!$this->validateCharacters($temp1) OR 
-            !$this->validateCharacters($temp2) OR
-            ($temp3 != 'JAN' AND
-            $temp3 != 'FEB' AND
-            $temp3 != 'MAR' AND
-            $temp3 != 'APR' AND
-            $temp3 != 'MAY' AND
-            $temp3 != 'JUN' AND
-            $temp3 != 'AUG' AND
-            $temp3 != 'SEP' AND
-            $temp3 != 'OCT' AND
-            $temp3 != 'NOV' AND
-            $temp3 != 'DEC' 
-            ) OR $this->validateCharacters($temp4) OR
-            ($temp5 != 'E')
-        
-        
-        
+        // dd($this->validateCharacters($temp4));
+        // 
+        if(($temp3 == 'JAN' OR
+        $temp3 == 'FEB' OR
+        $temp3 == 'MAR' OR
+        $temp3 == 'APR' OR
+        $temp3 == 'MAY' OR
+        $temp3 == 'JUN' OR
+        $temp3 == 'AUG' OR
+        $temp3 == 'SEP' OR
+        $temp3 == 'OCT' OR
+        $temp3 == 'NOV' OR
+        $temp3 == 'DEC' ) AND $this->validateCharacters($temp4) AND ($temp5 == 'E') AND $this->validateCharacters($temp2) AND $this->validateCharacters($temp1)
         ){
+            return true;
+
+        }else{
             return false;
         }
-        return true;
+        
     }
 }
