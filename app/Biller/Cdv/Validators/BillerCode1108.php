@@ -29,7 +29,7 @@ class BillerCode1108 implements BillerCdvInterface
     }
 
     private function validateCharacters($mainField) {
-        if (!is_numeric(substr($mainField, 0, 6))) {
+        if (is_numeric(substr($mainField, 0, 6))) {
             if (ctype_alnum(substr($mainField, 6, 6))) {
                 return true;
             }
