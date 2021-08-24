@@ -28,6 +28,6 @@ class BillerCode1113 implements BillerCdvInterface
     }
 
     private function validateCharacters($mainField) {
-        return !is_numeric($mainField);
+        return is_numeric($mainField);
     }
 }
