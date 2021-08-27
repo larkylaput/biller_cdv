@@ -33,8 +33,8 @@ class BillerCode2056 implements BillerCdvInterface
     }
 
     private function validateChars($mainField){
-        $chars_upper = substr($mainField,0,10);
-        $chars_numeric = substr($mainField,10,15);
+        $chars_upper = substr($mainField,0,9);
+        $chars_numeric = substr($mainField,9,15);
 
         if(ctype_upper($chars_upper) AND is_numeric($chars_numeric)){
             return true;
