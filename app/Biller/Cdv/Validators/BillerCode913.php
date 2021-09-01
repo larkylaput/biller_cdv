@@ -10,10 +10,8 @@ class BillerCode913 implements BillerCdvInterface
     public function validate($mainField, $amount): bool
     {
         try {
-            // $mainField = preg_replace('/\D/', '', $mainField);
-			// ABSCBN
             if (
-                $this->validateLength($mainField) and 
+                $this->validateLength($mainField) && 
                 $this->validateCharacters($mainField)
             ) {
                 return true;
@@ -21,20 +19,19 @@ class BillerCode913 implements BillerCdvInterface
         } catch (\Throwable $e) {
             throw new BillerValidatorException();
         }
+
         return false;
     }
 
     private function validateLength($mainField)
     {
         $length = strlen($mainField);
-        if ($length <> 50) {
-            return true;
-        }
-        return false;
+        return $length >= 1 && $length <= 30 ? true : false;
     }
 
-    private function validateCharacters($mainField) {
-       return ($mainField);
-	   
-    } 
+    private function validateCharacters($mainField)
+    {
+        // alphanumeric with allow spaces
+        return preg_match('/^[a-zA-Z0-9\s]+$/', $mainField) ? true : false;
+    }
 }
