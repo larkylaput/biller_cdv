@@ -11,7 +11,6 @@ class BillerCode82 implements BillerCdvInterface
     const Divisor = 10;
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateChars($mainField));
         try {
             // $mainField = preg_replace('/\D/', '', $mainField);
             if (
