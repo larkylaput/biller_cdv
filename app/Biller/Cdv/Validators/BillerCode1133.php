@@ -9,7 +9,7 @@ class BillerCode1133 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        // dd($this->validateFormat($mainField));
+        // dd($this->validateDates($mainField));
         try {
             if (
                 $this->validateLength($mainField) &&
@@ -46,10 +46,10 @@ class BillerCode1133 implements BillerCdvInterface
 
     private function validateAmount($mainField, $amount) {
         $amount = $amount * 100;
-        $amount = (int)$amount;
+        $amount = explode('.', $amount);
         $snamount = (int)substr($mainField, 14, strlen($mainField) - 16);
 
-        return $amount == $snamount;
+        return $amount[0] == $snamount;
     }
 
     private function validateFormat($mainField) {
