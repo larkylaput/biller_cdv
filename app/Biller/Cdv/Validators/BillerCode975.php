@@ -13,12 +13,13 @@ class BillerCode975 implements BillerCdvInterface
     public function validate($mainField, $amount): bool
     {
 
+        // dd($this->validateCharacters($mainField));
         try {
             // $mainField = preg_replace('/\D/', '', $mainField);
             if (
                 $this->validateLength($mainField) AND 
-                $this->validateChars($mainField) AND 
                 $this->validateCharacters($mainField)
+                // $this->validateChars($mainField) AND 
             ) {
                 return true;
             }
@@ -33,21 +34,34 @@ class BillerCode975 implements BillerCdvInterface
     {
         $length = strlen($mainField);
         
-        return $length === 8 ? true : false;
+        return $length >= 1 && $length <= 30 ? true : false;
     }
 
     private function validateCharacters($mainField)
     {
-        if(in_array(substr($mainField,0,2),self::valid_chars)){
-            return true;
-        }
-        return false;
+        // alphanumeric with allow spaces
+        return preg_match('/^[a-zA-Z0-9\s]+$/', $mainField) ? true : false;
     }
 
-    private function validateChars($mainField){
-        if(is_numeric(substr($mainField,2,6))){
-            return true;
-        }
-        return false;
-    }
+    // private function validateLength($mainField)
+    // {
+    //     $length = strlen($mainField);
+        
+    //     return $length === 8 ? true : false;
+    // }
+
+    // private function validateCharacters($mainField)
+    // {
+    //     if(in_array(substr($mainField,0,2),self::valid_chars)){
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
+    // private function validateChars($mainField){
+    //     if(is_numeric(substr($mainField,2,6))){
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }
