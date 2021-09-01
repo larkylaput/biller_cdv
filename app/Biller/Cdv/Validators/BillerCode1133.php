@@ -9,13 +9,14 @@ class BillerCode1133 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
-        dd($this->validateFormat($mainField));
+        // dd($this->validateFormat($mainField));
         try {
             if (
                 $this->validateLength($mainField) &&
                 $this->validateCharacters($mainField) &&
                 $this->validateDates($mainField) &&
-                $this->validateAmount($mainField, $amount)
+                $this->validateAmount($mainField, $amount) &&
+                $this->validateFormat($mainField)
             ) {
                 return true;
             }
@@ -70,12 +71,19 @@ class BillerCode1133 implements BillerCdvInterface
 
                 $formula['ref char'][] = $ref_char;
 
-                if ((int)fmod($counter, 2) == 0) {
+                if ((int)fmod($counter, 2) == 1) {
                     $formula['summer'][] = "(counter:$counter) ref_char:$ref_char : $sum + $ref_char = " . ($sum + $ref_char);                    
                     $sum += (int)$ref_char;
                 } else {
-                    $computation = (2 * (int)$ref_char) - (9 * ((int)$ref_char / 5));
-                    $formula['computation'][] = "($computation) ref_char:$ref_char : (2 * $ref_char) - (9 * ($ref_char / 5)) = ". (round((2 * (int)$ref_char) - (9 * ((int)$ref_char / 5))));
+                    $computation = ((2 * (int)$ref_char)) - (9 * ((int)$ref_char / 5));
+                    $formula['computation'][] = "($computation) ref_char:$ref_char : (2 * $ref_char) - (9 * ($ref_char / 5)) = ". ((2 * (int)$ref_char) - (9 * ((int)$ref_char / 5)));
+
+                    if (is_float($computation)) {
+                        $explode = explode('.', $computation);
+                        $computation = $explode[0] + $explode[1];
+                    }
+                    $formula['float'][] = "($computation) : $explode[0] + $explode[1] = ". ($explode[0] + $explode[1]);
+
                     $formula['summer'][] = "(counter:$counter) computation:$computation : $sum + $computation = " . ($sum + $computation);
                     $sum += $computation;
                 }
@@ -83,8 +91,11 @@ class BillerCode1133 implements BillerCdvInterface
                 $formula['sum'][] = $sum;
                 $counter++;
             }
-
             $formula['total'][] = $sum;
+
+            // $formula['total'][] = round($sum);
+
+            // $sum = round($sum);
 
             $remainder = (int)fmod($sum, 10);
 
@@ -97,7 +108,7 @@ class BillerCode1133 implements BillerCdvInterface
 
             $formula['check_digit'][] = "($check_digit) : 10 - $remainder = " . ((10 - $remainder));
 
-            return $formula;
+            // return $formula;
             return $check_digit == substr($mainField, -1);
         }
 
