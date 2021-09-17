@@ -15,7 +15,13 @@ class BillerCode807 implements BillerCdvInterface
     {
         $mainField = str_replace(' ', '', $mainField);
         try {
-            return $this->step1($mainField);
+            if (
+                $this->step1($mainField) &&
+                $this->validateLength($mainField)
+            ) {
+                return true;
+            }
+            // return $this->step1($mainField);
 
         } catch (Throwable $th) {
             throw new BillerValidatorException();
@@ -23,12 +29,26 @@ class BillerCode807 implements BillerCdvInterface
         return false;
     }
 
+    private function validateLength($mainField) {
+        $length = strlen($mainField);
+        return ($length === 10 || ($length >= 16 && $length <= 18)) ? true : false;
+    }
+
     private function step1($mainField)
     {
+        $length = strlen($mainField);
+
         $accountNumber = str_split(substr($mainField, 0, 9));
-        $controlDigit = substr($mainField, 9, 1);
+
+        if ($length >= 16 && $length <= 18) {
+            $mainField = substr($mainField, 1, 10);
+            $accountNumber = str_split(substr($mainField, 0, 9));
+        }
+        
+        $controlDigit = substr($mainField, -1);
 
         $formula['Account Number'] = $mainField;
+        $formula['Split Number'] = $accountNumber;
         $formula['Control Digit'] = $controlDigit;
         $product = 0;
         $sum = 0;
