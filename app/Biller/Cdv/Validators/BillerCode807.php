@@ -31,7 +31,7 @@ class BillerCode807 implements BillerCdvInterface
 
     private function validateLength($mainField) {
         $length = strlen($mainField);
-        return ($length === 10 || $length === 16) ? true : false;
+        return ($length === 10 || ($length >= 16 && $length <= 18)) ? true : false;
     }
 
     private function step1($mainField)
@@ -40,7 +40,7 @@ class BillerCode807 implements BillerCdvInterface
 
         $accountNumber = str_split(substr($mainField, 0, 9));
 
-        if ($length === 16) {
+        if ($length >= 16 && $length <= 18) {
             $mainField = substr($mainField, 1, 10);
             $accountNumber = str_split(substr($mainField, 0, 9));
         }
