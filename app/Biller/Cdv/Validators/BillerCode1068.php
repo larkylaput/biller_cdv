@@ -37,6 +37,7 @@ class BillerCode1068 implements BillerCdvInterface{
                 $this->validateLength($mainField) &&
                 $this->validateCharacters($mainField) &&
                 $this->validatellowedFourDigitNumber($mainField) &&
+                $this->validateMonthDay($mainField) &&
                 $this->validateFormat($mainField)
             ) {
                 return true;
