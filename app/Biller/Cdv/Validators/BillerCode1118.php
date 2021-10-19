@@ -23,17 +23,11 @@ class BillerCode1118 implements BillerCdvInterface
 
     private function validateFormat($mainField, $amount)
     {
-
         if (strlen($mainField) == 10) {
-
-            if (substr($mainField, 1, 1) == 2 && preg_match('%[^0-9]%', $mainField)) {
-                return $amount = 0;
-            } else {
-                return $amount = 1;
+            if (substr($mainField, 0, 1) == 2 && is_numeric($mainField)) {
+                return true;
             }
-            error_log($amount);
-        } else {
-            return $amount = 1;
         }
+        return false;
     }
 }
