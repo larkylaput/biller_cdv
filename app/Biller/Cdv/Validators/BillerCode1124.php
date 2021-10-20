@@ -57,8 +57,8 @@ class BillerCode1124 implements BillerCdvInterface
         $remainder = fmod($total, 11);
         $formula['remainder'] = "$total % 11 = $remainder"; 
         $formula['check digit'] = $remainder == 10 || $remainder == 0; 
-        dd($formula);
+        // dd($formula);
 
-        return $remainder == 0 || $remainder == 0;
+        return $remainder == 10 || $remainder == 0;
     }
 }
