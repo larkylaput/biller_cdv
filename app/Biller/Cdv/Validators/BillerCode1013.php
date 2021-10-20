@@ -25,7 +25,8 @@ class BillerCode1013 implements BillerCdvInterface
     }
 
     private function validateLength($mainField) {
-        return true;
+        $length = strlen($mainField);
+        return ($length >= 1 && $length <= 30) ? true : false;
     }
 
     private function validateCharacter ($mainField) {
