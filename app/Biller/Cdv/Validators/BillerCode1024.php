@@ -26,11 +26,11 @@ class BillerCode1024 implements BillerCdvInterface
 
     private function validateLength($mainField) {
         
-        if(strlen($mainField) > 9 && strlen($mainField) < 5){
-            return true;
+        if(strlen($mainField) > 9 || strlen($mainField) < 5){
+            return false;
         }
         
-        return false;
+        return true;
     }
 
     private function validateCharacter ($mainField) {
