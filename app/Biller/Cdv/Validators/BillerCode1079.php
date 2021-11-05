@@ -25,21 +25,12 @@ class BillerCode1079 implements BillerCdvInterface
         return false;
     }
 
-    private function validateLength($mainField)
-    {
+    private function validateLength($mainField) {
         $length = strlen($mainField);
-        if(strlen($mainField) > 11 OR strlen($mainField) < 7){
-            return false;
-        }
-        return true;
+        return in_array($length, [7,8,9,11]);
     }
 
     private function validateCharacters($mainField) {
-        
-        if (preg_match('/[\'^£$%&*;:()}{@#~?><>,|=_+¬-]/', $mainField))
-        {
-          return false;
-        }
-        return true;
+        return ctype_alpha($mainField);
     }
 }
