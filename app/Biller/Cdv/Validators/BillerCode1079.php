@@ -31,6 +31,6 @@ class BillerCode1079 implements BillerCdvInterface
     }
 
     private function validateCharacters($mainField) {
-        return ctype_alpha($mainField);
+        return ctype_alnum($mainField);
     }
 }
