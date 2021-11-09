@@ -14,14 +14,14 @@ class BillerCode1132 implements BillerCdvInterface
 
     public function validate($mainField, $amount): bool
     {
-        $amount = $amount * 1000;
+        $amount = $amount * 100;
         $secondSeq = substr($mainField, 13, 10);
         $dof = $secondSeq - $amount;
 
         try {
             if ($this->validateLength($mainField) &&
                 $this->validateCharacters($mainField) &&
-                // $this->validateDueDate($dof) &&
+                $this->validateDueDate($dof) &&
                 $this->validateFormat($mainField, $dof)
             ) { 
                 return true;
@@ -125,6 +125,6 @@ class BillerCode1132 implements BillerCdvInterface
         $dofRemainder2 = fmod($dofSum2, 10);
         $formula['dofRemainder2'] = "$dofSum2 % 10 = $dofRemainder2";
 
-        dd($formula);
+        return $dofRemainder1 == '0' && $dofRemainder2 == '0';
     }
 }
