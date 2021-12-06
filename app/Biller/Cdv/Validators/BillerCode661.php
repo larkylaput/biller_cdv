@@ -10,14 +10,15 @@ use Throwable;
 class BillerCode661 implements BillerCdvInterface {
     const VALID_LENGTH = [14, 16];
     const SIXTEEN_DIGITS_ALLOWED_INITIAL_DIGITS = [
-        // 542551,
         518217,
-        518178,
-        515603,
-        531210,
-        549832,
-        510186,
-        525617
+        518178, 
+        515603, 
+        531210, 
+        549832, 
+        525617,
+        542551, 
+        542594, 
+        510186
     ];
 
     const WEIGHT = 212121212121212;
