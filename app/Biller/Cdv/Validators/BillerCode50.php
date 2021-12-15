@@ -12,8 +12,8 @@ class BillerCode50 implements BillerCdvInterface
     {
         try {
             // Citibank VISA/Mastercard
-            $mainField = preg_replace('/\D/', '', $mainField);
-            return $this->validateLength($mainField, 16) && $this->validateBIN($mainField) && $this->validateCheckDigit($mainField);
+            // $mainField = preg_replace('/\D/', '', $mainField);
+            return $this->validateLength($mainField, 16) && $this->validateBIN($mainField) && $this->validateCheckDigit($mainField) && $this->validateCharacters($mainField);
         } catch (Throwable $th) {
             throw new BillerValidatorException();
         }
@@ -75,5 +75,9 @@ class BillerCode50 implements BillerCdvInterface
             '00000076','00000078'
         );
         return in_array($bin, $allowed_bins) || in_array($bin2, $allowed_bins2);
+    }
+
+    private function validateCharacters($mainField) {
+        return is_numeric($mainField);
     }
 }
