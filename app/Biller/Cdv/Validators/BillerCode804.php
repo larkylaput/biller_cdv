@@ -11,7 +11,7 @@ class BillerCode804 implements BillerCdvInterface
     {
         try {
             // PNB Credit Cards
-            $mainField = preg_replace('/\D/', '', $mainField); // remove all the non numberic characters
+            // $mainField = preg_replace('/\D/', '', $mainField); // remove all the non numberic characters
             if(
                 $this->validateChars($mainField)  and 
                 $this->validateCharacters($mainField) 
