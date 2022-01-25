@@ -15,6 +15,12 @@ class BillerCdv
     {
         // $className = self::validatorPath.self::validatorBaseName.$billerCode;
         // $validator = new $className;
-        return $this->validator->validate($mainValue, $amount);
+
+        $other_fields = [
+            "other_fields" => [
+                "due_date" => '2021-07-16'
+            ]
+        ];
+        return $this->validator->validate($mainValue, $amount, $other_fields);
     }
 }
