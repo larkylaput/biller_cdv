@@ -8,15 +8,17 @@ use Throwable;
 
 class BillerCode1142 implements BillerCdvInterface
 {
-
-    public function validate($mainField, $amount, $other_fields): bool
+    // $other_fields
+    public function validate($mainField, $amount): bool
     {
         try {
+            $mainFieldPart1 = substr($mainField, 0, 12);
+            $mainFieldPart2 = substr($mainField, 12, 8);
             if (
                 $this->validateLength($mainField) &&
                 $this->validateCharacters($mainField) &&
                 // $this->validateDueDate($other_fields['other_fields']['due_date']) &&
-                $this->validateFormat($mainField, $amount)
+                $this->validateFormat($mainFieldPart1, $mainFieldPart2, $amount)
             ) {
                 return true;
             }
@@ -29,51 +31,52 @@ class BillerCode1142 implements BillerCdvInterface
 
     private function validateLength($mainField) {
         $length = strlen($mainField);
-        return (in_array($length, [8,12])) ? true : false;
+        return ($length == 20) ? true : false;
+        // return (in_array($length, [8,12])) ? true : false;
     }
 
     private function validateCharacters($mainField) {
         return is_numeric($mainField);
     }
 
-    private function validateDueDate($dueDate) {
-        return (now() <= $dueDate) ? true : false;
-    }
+    // private function validateDueDate($dueDate) {
+    //     return (now() <= $dueDate) ? true : false;
+    // }
 
-    private function validateFormat($mainField, $amount) {
-        $length = strlen($mainField);
+    private function validateFormat($mainFieldPart1, $mainFieldPart2, $amount) {
+        $length1 = strlen($mainFieldPart1);
+        $length2 = strlen($mainFieldPart2);
 
-        if ($length == 12) {
+        if ($length1 == 12) {
 
-            $mainField2 = substr($mainField, 0, 10);
-            $checkDigit1 = substr($mainField, 10, 1);
-            $checkDigit2 = substr($mainField, -1);
+            $mainField2 = substr($mainFieldPart1, 0, 10);
+            $checkDigit1 = substr($mainFieldPart1, 10, 1);
+            $checkDigit2 = substr($mainFieldPart1, -1);
 
             $weight3 = ['11','10','9','8','7','6','5','4','3','2'];
             $weight4 = ['3','4','9','3','4','9','3','4','9','3'];
 
             $weight1 = ['11','10','9','8','7','6','5','4','3','2','1'];
-            $new_mainField1 = substr($mainField,0,11);
+            $new_mainField1 = substr($mainFieldPart1,0,11);
             $weight2 = ['3','4','9','3','4','9','3','4','9','3','1'];
-            $new_mainField2 = substr($mainField,0,10);
+            $new_mainField2 = substr($mainFieldPart1,0,10);
 
-            return ($this->validateMainField($mainField, $new_mainField1, $new_mainField2, $weight1, $weight2) && $this->validateCheckDigit($mainField2, $checkDigit1, $checkDigit2, $weight3, $weight4));
+            return ($this->validateMainField($mainFieldPart1, $new_mainField1, $new_mainField2, $weight1, $weight2) && $this->validateCheckDigit($mainField2, $checkDigit1, $checkDigit2, $weight3, $weight4));
 
-        } else if ($length == 8) {
-            $mainField1 = $mainField + $amount;
+        } else if ($length2 == 8) {
+            $mainField1 = $mainFieldPart2 + $amount;
             $weight1 = ['7','6','5','4','3','2','1'];
             $new_mainField1 = substr($mainField1,0,7);
             $weight2 = ['3','4','9','3','4','9','1'];
             $new_mainField2 = substr($mainField1,0,6);
 
             $multiAdd = $amount * 100;
-            $mainField2 = $mainField + $multiAdd;
+            $mainField2 = $mainFieldPart2 + $multiAdd;
 
             $new_mainField11 = substr($mainField2,0,7);
             $new_mainField22 = substr($mainField2,0,6);
 
             $checkDigit1 = substr($mainField2, 6, 1);
-
             $checkDigit2 = substr($mainField2, -1);
             $weight3 = ['7','6','5','4','3','2'];
             $weight4 = ['3','4','9','3','4','9'];
