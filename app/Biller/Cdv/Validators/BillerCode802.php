@@ -25,10 +25,11 @@ class BillerCode802 implements BillerCdvInterface
     
     private function validateLength($mainField) {
         $length = strlen($mainField);
-        return ($length >= 1 && $length <= 30);
+        return ($length == 14);
     }
 
     private function validateCharacters($mainField) {
-        return ctype_alnum($mainField);
+        $substr = substr($mainField, 0, 3);
+        return (in_array($substr, ['008', '009'])) ? true : false;
     }
 }
