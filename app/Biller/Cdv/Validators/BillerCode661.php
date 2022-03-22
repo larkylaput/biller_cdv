@@ -53,13 +53,13 @@ class BillerCode661 implements BillerCdvInterface {
             return false;
         }
 
-        $checkDigit = $this->computeCheckDigit();
         $check = substr($this->mainField, -1);
-
+        $checkDigit = $this->computeCheckDigit($check);
+        dd($checkDigit);
         return $checkDigit == $check;
     }
 
-    private function computeCheckDigit()
+    private function computeCheckDigit($checkDigit)
     {
         $count = 0;
         $total = 0;
@@ -86,6 +86,8 @@ class BillerCode661 implements BillerCdvInterface {
             }
             return $tmp - $total;
         }
+
         return $checkDigit;
     }
 }
+    
