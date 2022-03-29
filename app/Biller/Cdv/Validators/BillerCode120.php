@@ -51,7 +51,6 @@ class BillerCode120 implements BillerCdvInterface
         }
 
         $diff = fmod($sum, 11);
-        dd($diff);
         $computed = 11 - $diff;
         if ($diff == 1) $computed = 0;
         else if ($diff == 0) $computed = 1;
