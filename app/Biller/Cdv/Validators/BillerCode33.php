@@ -6,7 +6,7 @@ use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 use Throwable;
 
-class BillerCode33 implements BillerCdvInterface
+class BillerCode72 implements BillerCdvInterface
 {
     public function validate($mainField, $amount): bool
     {
