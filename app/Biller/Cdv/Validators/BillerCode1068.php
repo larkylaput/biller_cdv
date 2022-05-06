@@ -63,12 +63,10 @@ class BillerCode1068 implements BillerCdvInterface{
     }
 
     private function validateMonthDay($mainField) {
-        $month = date('m');
-        $day = date('d');
-        if (
-            substr($mainField, 10, 2) >= $month && 
-            (substr($mainField, 12, 2) <= $day || substr($mainField, 12, 2) >= $day)
-        ) { 
+        $dateToday = date('md');
+        $dueDate = substr($mainField, -4);
+
+        if ($dateToday <= $dueDate) {
             return true;
         }
 
