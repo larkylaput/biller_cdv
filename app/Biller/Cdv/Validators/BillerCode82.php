@@ -6,72 +6,69 @@ use App\Exceptions\BillerValidatorException;
 use App\Biller\Cdv\Factory\BillerCdvInterface;
 
 class BillerCode82 implements BillerCdvInterface
-{
-    const weightVal = '1212';
-    const Divisor = 10;
+{   
+    const WEIGHTS = [1,2,1,2];
+
     public function validate($mainField, $amount): bool
     {
         try {
-            // $mainField = preg_replace('/\D/', '', $mainField);
+            // PNB Credit Cards
             if (
-                $this->validateLength($mainField) AND 
-                $this->validateChars($mainField) AND 
+                $this->validateLength($mainField)&&
+                $this->checkDigitValidation($mainField)&&
                 $this->validateCharacters($mainField)
             ) {
                 return true;
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable $th) {
             throw new BillerValidatorException();
         }
-
         return false;
+    }
+
+    private function validateCharacters($mainField){
+        return is_numeric($mainField);
     }
 
     private function validateLength($mainField)
     {
-        $length = strlen($mainField);
-        
-        return $length === 5 ? true : false;
-    }
-
-    private function validateCharacters($mainField)
-    {
-        return is_numeric($mainField);
-    }
-
-    private function validateChars($mainField){
-        
-        $split_weight = str_split(self::weightVal);
-        $split_mainField = str_split(substr($mainField,0,4));
-        $LastDigit = substr($mainField,4,1);
-        $product = 0;
-        $total = 0;
-        $reimainder = 0;
-        $a = [];
-        foreach($split_mainField as $key => $data){
-
-            $product = $split_weight[$key] * $data;
-           
-            array_push($a,$product);
-            $total = $total + $product;
-
-        }
-        
-
-        $reimainder = fmod($total,self::Divisor);
- 
-        if($reimainder <> 0){
-            $total = self::Divisor - $reimainder;
-        }else{
-            $total = 0;
-        }
-
-        if($total == $LastDigit){
+        $check_length = strlen($mainField);
+        if($check_length === 5){
             return true;
-        }else{
-            return false;
         }
+        return false;
+    }
+    
+    private function checkDigitValidation($mainField)
+    {
+        $mainfield = substr($mainField,0,4);
+        $lastDigit = substr($mainField,-1);
+        
+        $sum = 0;
+        //multiply to weight
+        foreach (self::WEIGHTS as $key => $multiply) {
+            $total = $multiply *  $mainfield[$key];
+            $formula['total'][] = "$multiply X ".$mainfield[$key]. " = $total";
 
-
-    }       
+            if($total > 9) {
+                $splitTotal = str_split($total);
+                foreach ($splitTotal as $value) {
+                    $formula['sum'][] = "$sum + $value = " . ($sum + $value);
+                    $sum += $value;
+                }
+            } else {
+                $formula['sum'][] = "$total + $sum = " . ($sum + $total);
+                $sum += $total;
+            }
+        }
+        
+        $remainder = fmod($sum, 10); //get remainder
+        $checkDigit =  10 - $remainder;
+        
+        if($checkDigit == 10){
+            $checkDigit = 0; // if remainder is zero
+        }
+        
+        return $checkDigit == $lastDigit;   
+    }
 }
