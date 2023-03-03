@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Biller\Cdv\Validators;
+
+use App\Exceptions\BillerValidatorException;
+use App\Biller\Cdv\Factory\BillerCdvInterface;
+
+class BillerCode2056 implements BillerCdvInterface
+{
+    public function validate($mainField, $amount): bool
+    {
+
+        try {
+            // $mainField = preg_replace('/\D/', '', $mainField);
+            if (
+                $this->validateLength($mainField) AND 
+                $this->validateChars($mainField)
+            ) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            throw new BillerValidatorException();
+        }
+
+        return false;
+    }
+
+    private function validateLength($mainField)
+    {
+        $length = strlen($mainField);
+        
+        return $length === 15 ? true : false;
+    }
+
+    private function validateChars($mainField){
+        $chars_upper = substr($mainField,0,9);
+        $chars_numeric = substr($mainField,9,15);
+
+        if(ctype_upper($chars_upper) AND is_numeric($chars_numeric)){
+            return true;
+        }
+
+        return false;
+
+    }   
+}

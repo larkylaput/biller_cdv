@@ -1,0 +1,13 @@
+<?php
+namespace App\Biller\Cdv\Validators;
+
+use App\Exceptions\BillerValidatorException;
+use App\Biller\Cdv\Factory\BillerCdvInterface;
+
+class $name$ implements BillerCdvInterface
+{
+    public function validate($mainField, $amount) : bool
+    {
+        throw new BillerValidatorException();
+    }
+}
