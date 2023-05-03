@@ -13,9 +13,27 @@ use Illuminate\Http\Request;
 |
 */
 
+
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 
 Route::post('cdv/check', 'CdvCheckController@validate');
+
+Route::get('/SampleCall','SampleController@TestData');
+
+
+
+Route::get('/message',function (){
+    return response()->json([
+        'message'=>"Hello world",
+        'Status_Code'=>200
+    ]);
+});
+
+
+
+
